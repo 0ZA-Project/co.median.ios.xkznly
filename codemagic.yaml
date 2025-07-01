@@ -1,9 +1,16 @@
 workflows:
-
-    sample-workflow:
-
-        name: Codemagic Sample Workflow
-
-        max_build_duration: 120
-
-        instance_type: mac_mini_m2
+  ios-tikly:
+    name: Build Tikly iOS app
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    environment:
+      vars:
+        XCODE_PROJECT: "Tikly.xcodeproj"
+        XCODE_SCHEME: "Tikly"
+    scripts:
+      - name: Build app
+        script: |
+          xcodebuild -project $XCODE_PROJECT -scheme $XCODE_SCHEME -sdk iphoneos -configuration Release clean build
+          xcodebuild -exportArchive -archivePath ./build/Tikly.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath ./build
+    artifacts:
+      - build/*.ipa
